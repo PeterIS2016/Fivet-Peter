@@ -1,5 +1,6 @@
 package cl.ucn.disc.isof.fivet.domain.service.ebean;
 
+import cl.ucn.disc.isof.fivet.domain.model.Control;
 import cl.ucn.disc.isof.fivet.domain.model.Paciente;
 import cl.ucn.disc.isof.fivet.domain.model.Persona;
 import cl.ucn.disc.isof.fivet.domain.service.BackendService;
@@ -10,6 +11,8 @@ import com.avaje.ebean.config.EncryptKeyManager;
 import com.avaje.ebean.config.ServerConfig;
 import com.durrutia.ebean.BaseModel;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 public class EbeanBackendService implements BackendService {
@@ -73,7 +76,6 @@ public class EbeanBackendService implements BackendService {
 
     }
 
-
     /**
      * @param rut
      * @return the Persona
@@ -84,6 +86,70 @@ public class EbeanBackendService implements BackendService {
                 .where()
                 .eq("rut", rut)
                 .findUnique();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Paciente> getPacientes() {
+        return this.ebeanServer.find(Paciente.class)
+                .findList();
+    }
+
+    /**
+     *
+      * @param nombre a buscar, ejemplo: "pep" que puede retornar pepe, pepa, pepilla, etc..
+     * @return
+     */
+    @Override
+    /// revisar si es necesario el eq
+    public List<Paciente> getPacientesPorNombre(String nombre) {
+        return this.ebeanServer.find(Paciente.class)
+                .where()
+                .eq("nombre",nombre)
+                .findList();
+    }
+
+    /**
+     *
+     * @param numeroPaciente de ficha.
+     * @return
+     */
+    @Override
+    public Paciente getPaciente(Integer numeroPaciente) {
+        return this.ebeanServer.find(Paciente.class)
+                .where()
+                .eq("numero", numeroPaciente)
+                .findUnique();
+    }
+
+    /**
+     *
+     * @param rutVeterinario que realizo el control
+     * @return
+     */
+    @Override
+    public List<Control> getControlesVeterinario(String rutVeterinario) {
+        return this.ebeanServer.find(Control.class).where()
+                .eq("veterinario.rut",rutVeterinario)
+                .findList();
+    }
+
+    /**
+     *
+     * @param control        a agregar al paciente.
+     * @param numeroPaciente a asociar.
+     */
+    @Override
+    public void agregarControl(Control control, Integer numeroPaciente) {
+        Paciente paciente = ebeanServer.find(Paciente.class)
+                .where()
+                .eq("numero", numeroPaciente)
+                .findUnique();
+        paciente.add(control);
+        paciente.update();
     }
 
     /**

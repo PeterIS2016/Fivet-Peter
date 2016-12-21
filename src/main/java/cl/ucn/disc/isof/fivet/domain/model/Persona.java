@@ -54,6 +54,18 @@ public class Persona extends BaseModel {
     @NotNull
     private Tipo tipo;
 
+    @Getter
+    @Setter
+    private String direccion;
+
+    /**
+     * Agrega un paciente a la lista pacientes
+     * @param paciente
+     */
+    public void add(final Paciente paciente){
+        this.pacientes.add(paciente);
+    }
+
     /**
      * Listado de pacientes
      */
